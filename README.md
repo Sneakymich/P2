@@ -137,31 +137,47 @@ Ejercicios
 - Etiquete manualmente los segmentos de voz y silencio del fichero grabado al efecto. Inserte, a 
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
-
+![](img/Grafica1.jpeg)
 
 - A la vista de la gráfica, indique qué valores considera adecuados para las magnitudes siguientes:
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
+	* _Respuesta:_ En las transiciones de silencio-voz más bruscas, se pasa de unos -60dB a -35dB aproximadamente. En otras transiciones más suaves (y duraderas) se pasa de -55dB a -40dB aproximadamente. Si nos basamos en el nivel de silencio inicial (unos -60dB) con el nivel de voz incial (unos -35dB), un incremento de alrededor de +25 a +30 dB es suficiente para distinguir claramente voz del ruido de fondo.
+
 	* Duración mínima razonable de los segmentos de voz y silencio.
+
+	* _Respuesta:_ A partir de la observación de la señal y del etiquetado manual, los segmentos de voz claramente perceptibles (sílabas/palabras) presentan duraciones típicas superiores a 0,2 s, mientras que los silencios que se perciben como pausas reales también son relativamente largos.  
+	Duración mínima de voz: = 200-250ms  
+	Duración mínima de silencio: = 150-200ms
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 
+	* _Respuesta:_ La tasa de cruces por cero permanece baja en los silencios y aumenta notablemente durante sonidos fricativos sordos, mientras que en vocales y consonantes sonoras toma valores intermedios.
+	Aunque la ZCR no permite por sí sola separar voz y silencio, sí resulta útil como característica complementaria a la potencia, ya que ayuda a distinguir fricativas sordas (alta ZCR y baja energía) de verdaderos silencios.
 
 ### Desarrollo del detector de actividad vocal
 
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal en
   tiempo real tan exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
+   * Se ha adaptado el código para que el VAD acepte por línea de comandos el parámetro alpha1, añadiéndolo en vad.docopt y modificando vad.c para que el FSA lo utilice. Además, se ha creado un script run_vad_modificado.sh para realizar un barrido de alpha1 entre 10 y 12 con incrementos de 0.1 y obtener automáticamente los resultados sobre nuestro audio.wav.  
+   A continuación vemos que el valor de alpha1 optimo es el de 10,7 . 
+   ![](img/alpha1.jpeg)
+   Seguidamente se añaden los ficheros "pav_analysis.c" y "pav_analysis.h" para poder calcular nuestros features con el código implementado en la práctica 1. Con estos ficheros, se adapta el código "vad.c" para calcular la feature de la potencia. La usaremos para determinar si la trama es de voz o silencio.
 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
+  ![](img/Grafica2.jpg)
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
+
+- _Respuesta_: En la comparación entre el etiquetado manual y la detección automática se observan algunas discrepancias, principalmente en transiciones rápidas entre voz y silencio. El VAD tiende a generar segmentos más fragmentados, especialmente en zonas donde la energía es baja o hay fonemas fricativos, lo que provoca pequeños falsos positivos de voz. También se aprecia que el método automático retrasa ligeramente el inicio y el fin de algunos tramos de voz debido a los umbrales y duraciones mínimas definidos en el FSA. Estas diferencias son esperables, ya que el etiquetado manual es más preciso en las fronteras y el algoritmo toma decisiones basadas únicamente en umbrales acústicos.
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+  ![](img/som-hi.jpg)
 
 
 ### Trabajos de ampliación
@@ -176,6 +192,7 @@ Ejercicios
 
 - Si ha usado `docopt_c` para realizar la gestión de las opciones y argumentos del programa `vad`, inserte
   una captura de pantalla en la que se vea el mensaje de ayuda del programa.
+  ![](img/extra.jpg)
 
 
 ### Contribuciones adicionales y/o comentarios acerca de la práctica
