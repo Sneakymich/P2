@@ -2,5 +2,5 @@
 
 for alpha1 in $(seq 10 0.1 12); do
     echo -ne "$alpha1\t"
-    scripts/run_vad.sh $alpha1 | grep TOTAL
+    scripts/run_vad_modificado.sh $alpha1
 done | sort -t: -k 2n
